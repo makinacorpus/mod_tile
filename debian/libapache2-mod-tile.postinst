@@ -3,20 +3,19 @@ set -e
 
 if [ "$1" = configure ] ; then
 
-    . /usr/share/debconf/confmodule
-
     mkdir -p /var/lib/mod_tile
     chown www-data:www-data /var/lib/mod_tile
 
-       # only enable on new installs, not on upgrades
+    # only enable on new installs, not on upgrades
     if [ -z "$2" ] ; then
+        . /usr/share/debconf/confmodule
 	    a2enmod tile
         db_get libapache2-mod-tile/enablesite || true
         ENABLE_SITE=$RET
         db_stop
         if [ "x$ENABLE_SITE" = "xtrue" ] ; then
             a2ensite tileserver_site
-            a2dissite 000-default
+            a2dissite 000-default || true
         fi
     fi
     
@@ -38,9 +37,6 @@ if [ "$1" = configure ] ; then
     fi
     true
 fi
-
-#script will hang without this!
-db_stop
 
 #DEBHELPER#
 

@@ -3,7 +3,6 @@
 # Provides:          renderd
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
-# Should-Start:      postgresql
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Mapnik rendering daemon
@@ -18,8 +17,7 @@ DESC="Mapnik rendering daemon"
 NAME=renderd
 DAEMON=/usr/bin/$NAME
 DAEMON_ARGS=""
-PIDSOCKDIR=/var/run/$NAME
-PIDFILE=$PIDSOCKDIR/$NAME.pid
+PIDFILE=/var/run/$NAME/$NAME.pid
 SCRIPTNAME=/etc/init.d/$NAME
 RUNASUSER=www-data
 
@@ -41,7 +39,8 @@ RUNASUSER=www-data
 #
 do_start()
 {
-    [ -d "$PIDSOCKDIR" ] ||  mkdir -p $PIDSOCKDIR && chown $RUNASUSER $PIDSOCKDIR
+    mkdir -p /var/run/renderd
+    chown $RUNASUSER /var/run/renderd
 	# Return
 	#   0 if daemon has been started
 	#   1 if daemon was already running
